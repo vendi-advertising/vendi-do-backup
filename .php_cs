@@ -13,7 +13,9 @@ return PhpCsFixer\Config::create()
 
         //We are using ::class in our code and this freaks symfony out if set to true
         'class_keyword_remove' => false,
-        'declare_strict_types' => true,
+
+        //We need PHP 5.6 support so we can't use this
+        'declare_strict_types' => false,
         'lowercase_cast' => true,
 
         //NOTE: Do not change!!!
