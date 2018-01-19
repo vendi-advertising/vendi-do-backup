@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 namespace Vendi\DigitalOcean\Backup\Commands;
 
 use Aws\S3\S3Client;
