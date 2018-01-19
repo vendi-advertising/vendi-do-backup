@@ -53,7 +53,7 @@ $phar->setStub( <<<EOB
 #!/usr/bin/env php
 <?php
 Phar::mapPhar();
-define( 'VENDI_DO_BACKUP_PHAR', 'phar://vendi-admin-cli.phar' );
+define( 'VENDI_DO_BACKUP_PHAR', 'phar://vendi-do-backup.phar' );
 include VENDI_DO_BACKUP_PHAR . '/app.php';
 __HALT_COMPILER();
 ?>
