@@ -27,7 +27,7 @@ class BackupCommand extends Command
         $this->_io = $io;
     }
 
-    protected function get_or_create_io(InputInterface $input, OutputInterface $output) : SymfonyStyle
+    protected function get_or_create_io(InputInterface $input, OutputInterface $output)
     {
         if (! $this->_io) {
             $this->_io = new SymfonyStyle($input, $output);
