@@ -36,7 +36,6 @@ $finder
     ->exclude('Test')
     ->exclude('Tests')
     ->exclude('symfony/var-dumper')
-    ->exclude('aws-sdk-php/src/data')
     ->exclude('symfony/finder')
 //    ->exclude('php-cli-tools/examples')
     ;
