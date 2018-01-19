@@ -14,11 +14,13 @@ class BackupCommand extends Command
 
     private $_public_key;
 
-    private $_site_name;
+    private $_bucket;
 
     private $_file;
 
     private $_name;
+
+    private $_region;
 
     private $_io;
 
@@ -39,12 +41,16 @@ class BackupCommand extends Command
     {
         $this
             ->setName('backup')
+
             ->setDescription('Backup to Digital Ocean')
+
             ->addOption('public-key', null, InputOption::VALUE_REQUIRED, 'The public key')
             ->addOption('private-key', null, InputOption::VALUE_REQUIRED, 'The private key')
-            ->addOption('site-name', null, InputOption::VALUE_REQUIRED, 'The site\s name for the folder')
             ->addOption('file', null, InputOption::VALUE_REQUIRED, 'The file to upload')
-            ->addOption('name', null, InputOption::VALUE_REQUIRED, 'Optiona. The name of the file on Digital Ocean')
+            ->addOption('bucket', null, InputOption::VALUE_REQUIRED, 'The bucket to upload to')
+            ->addOption('name', null, InputOption::VALUE_REQUIRED, 'The name of the file on Digital Ocean')
+
+            ->addOption('region', null, InputOption::VALUE_REQUIRED, 'Optional. The region to upload to. Default is nyc3')
         ;
     }
 
@@ -52,26 +58,23 @@ class BackupCommand extends Command
     {
         parent::initialize($input, $output);
 
-        $this->_private_key = $input->getOption('private-key');
-        $this->_public_key  = $input->getOption('public-key');
-        $this->_site_name   = $input->getOption('site-name');
-        $this->_file        = $input->getOption('file');
-        $this->_name        = $input->getOption('name');
+        $required = [
+                        '_private_key'  => 'private-key',
+                        '_public_key'   => 'public-key',
+                        '_bucket'       => 'bucket',
+                        '_file'         => 'file',
+                        '_name'         => 'name',
+                ];
 
-        if (!$this->_private_key) {
-            throw new \Exception('The --private-key option is required');
-        }
+        $optional = [
+                        '_region'       => 'region',
+                ];
 
-        if (!$this->_public_key) {
-            throw new \Exception('The --public-key option is required');
-        }
-
-        if (!$this->_site_name) {
-            throw new \Exception('The --site-name option is required');
-        }
-
-        if (!$this->_file) {
-            throw new \Exception('The --file option is required');
+        foreach($required as $prop => $key){
+            $this->$prop = $input->getOption($key);
+            if (!$this->$prop) {
+                throw new \Exception(sprintf('The --%1$s option is required', $key));
+            }
         }
 
         if (!is_file($this->_file) || ! is_readable($this->_file)) {
@@ -81,6 +84,10 @@ class BackupCommand extends Command
         if (!$this->_name) {
             $this->_name = sprintf('%1$s_%2$s', $this->_site_name, $this->_file);
         }
+
+        if (!$this->_region) {
+            $this->_region = 'nyc3';
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -89,15 +96,27 @@ class BackupCommand extends Command
         // Configure a client using Spaces
         $client = new S3Client([
                 'version' => 'latest',
-                'region'  => 'nyc3',
-                'endpoint' => 'https://nyc3.digitaloceanspaces.com',
+                'region'  => $this->_region,
+                'endpoint' => sprintf('https://%1$s.digitaloceanspaces.com', $this->_region),
                 'credentials' => [
                         'key'    => $this->_public_key,
                         'secret' => $this->_private_key,
                     ],
         ]);
 
-        $bucket = 'vendi-backup';
+
+        $bucket_found = false;
+        $spaces = $client->listBuckets();
+        foreach ($spaces['Buckets'] as $space){
+            if($space['Name'] === $this->_bucket){
+                $bucket_found = true;
+                break;
+            }
+        }
+
+        if(!$bucket_found){
+            throw new \Exception('The supplied bucket could not be found');
+        }
 
         $file_resource = fopen($this->_file, 'r');
         if (!$file_resource) {
@@ -107,7 +126,7 @@ class BackupCommand extends Command
         // Upload a file to the Space
         $insert = $client->putObject(
                                         [
-                                            'Bucket' => 'vendi-backup',
+                                            'Bucket' => $this->_bucket,
                                             'Key'    => $this->_name,
                                             'Body'   => $file_resource,
                                         ]
