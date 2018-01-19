@@ -1,10 +1,10 @@
 {
     "require": {
-        "toin0u/digitalocean-v2": "~2.0",
         "symfony/finder": "^4.0",
         "webmozart/path-util": "^2.3",
         "symfony/console": "^4.0",
-        "symfony/yaml": "^4.0"
+        "symfony/yaml": "^4.0",
+        "aws/aws-sdk-php": "^3.50"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.2 || ^2.7",
