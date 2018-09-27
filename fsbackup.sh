@@ -1,6 +1,7 @@
 #!/bin/bash
 
 archive_file=/data/backups/www/`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz
+cd /
 tar zcf $archive_file                      \
     --exclude="*/logs/*"                    \
     --exclude="*/node_modules/*"            \
@@ -9,7 +10,8 @@ tar zcf $archive_file                      \
     --exclude="*/wfcache/*"                 \
     --exclude="*/vendi_cache/*"             \
     --exclude="*/.git/*"                    \
-     /var/www/
+    -C /                                    \
+    var/www/
 
 # Create 64 bytes of random data, asymetrically encrypt that with ssh public key write that two *.enc.key
 # Then use that key to symetrically encrypt the file to *.enc
