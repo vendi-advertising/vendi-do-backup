@@ -1,7 +1,7 @@
 #!/bin/bash
 
 archive_file=/data/backups/www/`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz
-tar zcvf $archive_file                      \
+tar zcf $archive_file                      \
     --exclude="*/logs/*"                    \
     --exclude="*/node_modules/*"            \
     --exclude="*/vendor/*"                  \
