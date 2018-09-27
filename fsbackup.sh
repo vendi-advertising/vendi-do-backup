@@ -1,6 +1,6 @@
 #!/bin/bash
 
-archive_file=/data/backups/www/`date +"%Y-%m-%d_%H-%M-%S"`.tar.gx
+archive_file=/data/backups/www/`date +"%Y-%m-%d_%H-%M-%S"`.tar.gz
 tar zcvf $archive_file                      \
     --exclude="*/logs/*"                    \
     --exclude="*/node_modules/*"            \
