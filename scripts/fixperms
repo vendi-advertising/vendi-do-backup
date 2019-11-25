@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$1" = "" ]; then
+        echo "Please provide a path"
+        exit 1
+fi
+
+if [ "$(whoami)" != "root" ]; then
+        echo "You must be root to run this script"
+        exit 1
+fi
+
+path=$1
+
+find $path -type d              -exec chown www-data:www-data {} \;
+find $path -type f              -exec chown www-data:www-data {} \;
+find $path -type d              -exec chmod 775 {} \;
+find $path -type f ! -perm -a+x -exec chmod 664 {} \;
+chmod g+s $path
