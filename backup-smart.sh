@@ -13,7 +13,8 @@ ABS_PATH_TO_FOLDER_TO_BACKUP=/var/www/
     ########################
       ####################
 
-cd $BACKUP_FOLDER_SHARED_ROOT_WITH_TRAILING_SLASH;
+mkdir -p $BACKUP_FOLDER_SHARED_ROOT_WITH_TRAILING_SLASH
+cd $BACKUP_FOLDER_SHARED_ROOT_WITH_TRAILING_SLASH
 
 function monthly
 {
