@@ -53,7 +53,8 @@ function backup
 	[ -d daily.02 ] && mv daily.02 daily.03
 	[ -d daily.01 ] && mv daily.01 daily.02
 	[ -d daily.00 ] && cp -al daily.00 daily.01
-	rsync -a --delete ${ABS_PATH_TO_FOLDER_TO_BACKUP} daily.00/
+        [ ! -d daily.01 ] && mkdir daily.01
+        rsync -a --delete --link-dest=${BACKUP_FOLDER_SHARED_ROOT_WITH_TRAILING_SLASH}daily.01 ${ABS_PATH_TO_FOLDER_TO_BACKUP} daily.00/
 
 	#Get the month and day of weeks as numbers
 	MONTH=`date +%d`
