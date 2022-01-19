@@ -1,3 +1,5 @@
 /vendor/
 /releases/
 /tmp/
+/composer.lock
+/.idea
